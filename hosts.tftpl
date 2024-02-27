@@ -1,0 +1,40 @@
+---
+
+all:
+  hosts:
+    %{~ for i in masternodes ~}
+    ${i["name"]}:
+      ansible_host: ${i["network_interface"][0]["nat_ip_address"]}
+      ip: ${i["network_interface"][0]["ip_address"]}
+      access_ip: ${i["network_interface"][0]["ip_address"]}
+      ansible_user: ${user}
+    %{~ endfor ~}
+    %{~ for i in workernodes ~}
+    ${i["name"]}:
+      ansible_host: ${i["network_interface"][0]["nat_ip_address"]}
+      ip: ${i["network_interface"][0]["ip_address"]}
+      access_ip: ${i["network_interface"][0]["ip_address"]}
+      ansible_user: ${user}
+    %{~ endfor ~}
+  children:
+    kube_control_plane:
+      hosts:
+        %{~ for i in masternodes ~}
+        ${i["name"]}:
+        %{~ endfor ~}
+    kube_node:
+      hosts:
+        %{~ for i in workernodes ~}
+        ${i["name"]}:
+        %{~ endfor ~}
+    etcd:
+      hosts:
+        %{~ for i in masternodes ~}
+        ${i["name"]}:
+        %{~ endfor ~}
+    k8s_cluster:
+      children:
+        kube_control_plane:
+        kube_node:
+    calico_rr:
+      hosts: {}
