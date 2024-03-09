@@ -34,7 +34,7 @@ resource "yandex_compute_instance" "mnode" {
   connection {
     type        = "ssh"
     user        = "${var.ssh_user}"
-    private_key = "${file("~/.ssh/id_rsa")}"
+    private_key = "${var.private_key}"
     host        = self.network_interface[0].nat_ip_address
   }
 
