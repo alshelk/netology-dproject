@@ -26,15 +26,27 @@ variable "bucket_name" {
   description = "bucket for backend"
 }
 
-variable "sa_name" {
+variable "sa_name_s3" {
   type        = string
   default     = "sa-edit-s3"
   description = "service account for backend"
 }
 
-variable "sa_roles" {
+variable "sa_roles_s3" {
   type        = list(string)
   default     = ["storage.editor"]
+  description = "service account roles"
+}
+
+variable "sa_name_cont_reg" {
+  type        = string
+  default     = "k8s-role-sa-cont-reg"
+  description = "service account for backend"
+}
+
+variable "sa_roles_cont_reg" {
+  type        = list(string)
+  default     = ["container-registry.editor"]
   description = "service account roles"
 }
 

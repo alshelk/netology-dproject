@@ -37,6 +37,12 @@ variable "default_cidr" {
   description = "https://cloud.yandex.ru/docs/vpc/operations/subnet-create"
 }
 
+variable "dns_zone_id" {
+  type    = string
+  default = "dns2njvtqjticn9q5lf4"
+}
+
+
 ### service account
 
 variable "sa_name" {

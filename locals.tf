@@ -8,6 +8,10 @@ resource "null_resource" "cluster" {
   ]
 }
 
+resource "time_sleep" "wait_2_minutes" {
+  create_duration = "120s"
+}
+
 resource "null_resource" "localkubectl" {
   provisioner "remote-exec" {
     connection {
@@ -29,17 +33,30 @@ resource "null_resource" "localkubectl" {
   }
   
   depends_on = [
-    null_resource.cluster
+    null_resource.cluster,
+    time_sleep.wait_2_minutes
   ]
 }
 
 resource "null_resource" "monitoring" {
   
   provisioner "local-exec" {
-    command = "kubectl apply --server-side -f ${path.module}/kube-prometheus/manifests/setup && kubectl wait --for condition=Established --all CustomResourceDefinition --namespace=monitoring && kubectl apply -f ${path.module}/../kube-prometheus/manifests/"
+    command = <<EOT
+kubectl apply --server-side -f ${path.module}/kube-prometheus/manifests/setup
+kubectl wait --for condition=Established --all CustomResourceDefinition --namespace=monitoring 
+kubectl apply -f ${path.module}/kube-prometheus/manifests/ 
+EOT
   }
   
   depends_on = [
     null_resource.localkubectl
+  ]
+}
+
+locals {
+  servers_list = concat([ for i in yandex_compute_instance.mnode : i], [ for i in yandex_compute_instance.wnode : i])
+  depends_on = [
+    yandex_compute_instance.mnode,
+    yandex_compute_instance.wnode
   ]
 }

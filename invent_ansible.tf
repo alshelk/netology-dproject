@@ -1,6 +1,6 @@
 
 resource "local_file" "hosts_cfg" {
-  content = templatefile("${path.module}/hosts.tftpl",
+  content = templatefile("${path.module}/templates/hosts.tftpl",
     { masternodes = yandex_compute_instance.mnode,
       workernodes = yandex_compute_instance.wnode,
       user = var.ssh_user }
@@ -15,7 +15,7 @@ resource "local_file" "hosts_cfg" {
 }
 
 resource "local_file" "k8s-cluster" {
-  content = templatefile("${path.module}/k8s-cluster.yml.tftpl",
+  content = templatefile("${path.module}/templates/k8s-cluster.yml.tftpl",
     { cluster_ip = yandex_compute_instance.mnode[0].network_interface[0].nat_ip_address,
     }
   )
