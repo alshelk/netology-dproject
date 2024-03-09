@@ -132,7 +132,9 @@ jobs:
       env:
         YC_TOKEN: ${{ secrets.YC_TOKEN }}
         YC_CLOUD_ID: ${{ secrets.YC_CLOUD_ID }}
-        YC_FOLDER_YD: ${{ secrets.YC_FOLDER_YD }}
+        YC_FOLDER_ID: ${{ secrets.YC_FOLDER_ID }}
+        PUBLIC_KEY: ${{ secrets.PUBLIC_KEY }}
+        PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
       run: terraform apply -auto-approve -var "token=${YC_TOKEN}" -var "cloud_id=${YC_CLOUD_ID}" -var "folder_id=${YC_FOLDER_ID}" -var "public_key=${PUBLIC_KEY}" -var "private_key=${PRIVATE_KEY}"
       
 #     # Generates an execution plan for Terraform
