@@ -9,3 +9,4 @@
 # own secret vars store.
 personal.auto.tfvars
 secret.*
+outputs.tf
