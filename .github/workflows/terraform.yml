@@ -67,8 +67,8 @@ jobs:
 
     steps:
     # Checkout the repository to the GitHub Actions runner
-    - name: Checkout
-      uses: actions/checkout@v3
+    # - name: Checkout
+    #   uses: actions/checkout@v3
 
     - uses: hashicorp/terraform-github-actions/fmt
     - uses: hashicorp/terraform-github-actions/init
