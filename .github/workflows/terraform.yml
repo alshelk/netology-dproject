@@ -67,22 +67,24 @@ jobs:
 
     steps:
     # Checkout the repository to the GitHub Actions runner
-    # - name: Checkout
-    #   uses: actions/checkout@v3
+    - name: Checkout
+      uses: actions/checkout@v3
 
-    - uses: hashicorp/terraform-github-actions/fmt
-    - uses: hashicorp/terraform-github-actions/init
-    - uses: hashicorp/terraform-github-actions/validate    
+    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: "1.5.7"
+        # cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
-#     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
-#     - name: Setup Terraform
-#       uses: hashicorp/setup-terraform@v1
-#       with:
-#         cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-
-#     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
-#     - name: Terraform Init
-#       run: terraform init
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      id: init
+      env: 
+        S3_ACCESS_KEY: ${{ secret.S3_ACCESS_KEY }}
+        S3_SECRET_KEY: ${{ secret.S3_SECRET_KEY }}
+        S3_BUCKET: ${{ var.S3_BUCKET }}
+      run: terraform init -backend-config="access_key=$S3_ACCESS_KEY" -backend-config="secret_key=$S3_SECRET_KEY" -backend-config="bucket=$S3_BUCKET"
 
 #     # Checks that all Terraform configuration files adhere to a canonical format
 #     - name: Terraform Format
