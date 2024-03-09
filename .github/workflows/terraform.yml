@@ -96,36 +96,36 @@ jobs:
     #   if: success() || failure()
     #   run: terraform validate -no-color
 
-    # Run a terraform plan
-    - name: Terraform Plan
-      id: plan
-      run: terraform plan -no-color
-    # Add a comment to pull requests with plan results
-    - name: Add Plan Comment
-      id: comment
-      uses: actions/github-script@v6
-      env:
-        PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const output = `#### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
-          #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+    # # Run a terraform plan
+    # - name: Terraform Plan
+    #   id: plan
+    #   run: terraform plan -no-color
+    # # Add a comment to pull requests with plan results
+    # - name: Add Plan Comment
+    #   id: comment
+    #   uses: actions/github-script@v6
+    #   env:
+    #     PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+    #   with:
+    #     github-token: ${{ secrets.GITHUB_TOKEN }}
+    #     script: |
+    #       const output = `#### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+    #       #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
       
-          Show Plan
+    #       Show Plan
           
-          \`\`\`${process.env.PLAN}\`\`\`
+    #       \`\`\`${process.env.PLAN}\`\`\`
           
           
           
-          *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Workflow: \`${{ github.workflow }}\`*`;
+    #       *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Workflow: \`${{ github.workflow }}\`*`;
             
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: output
-          })
+    #       github.rest.issues.createComment({
+    #         issue_number: context.issue.number,
+    #         owner: context.repo.owner,
+    #         repo: context.repo.repo,
+    #         body: output
+    #       })
 
     - name: Terraform Apply
       id: apply
