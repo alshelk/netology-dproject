@@ -19,7 +19,7 @@ variable "folder_id" {
   description = "https://cloud.yandex.ru/docs/resource-manager/operations/folder/get-id"
 }
 
-variable "bucket_name" {
+variable "bucket" {
   type        = string
   description = "bucket for backend"
 }
