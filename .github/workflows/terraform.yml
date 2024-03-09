@@ -86,10 +86,55 @@ jobs:
         S3_BUCKET: ${{ vars.S3_BUCKET }}
       run: terraform init -backend-config="access_key=$S3_ACCESS_KEY" -backend-config="secret_key=$S3_SECRET_KEY" -backend-config="bucket=$S3_BUCKET"
 
-#     # Checks that all Terraform configuration files adhere to a canonical format
-#     - name: Terraform Format
-#       run: terraform fmt -check
+    # Checks that all Terraform configuration files adhere to a canonical format
+    - name: Terraform Format
+      run: terraform fmt -check
 
+    - name: Terraform Validate
+      id: validate
+      # Run even if formatting fails
+      if: success() || failure()
+      run: terraform validate -no-color
+
+    # Run a terraform plan
+    - name: Terraform Plan
+      id: plan
+      run: terraform plan -no-color
+    # Add a comment to pull requests with plan results
+    - name: Add Plan Comment
+      id: comment
+      uses: actions/github-script@v6
+      env:
+        PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const output = `#### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+          #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+      
+          Show Plan
+          
+          \`\`\`${process.env.PLAN}\`\`\`
+          
+          
+          
+          *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Workflow: \`${{ github.workflow }}\`*`;
+            
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: output
+          })
+
+    - name: Terraform Apply
+      id: apply
+      env:
+        YC_TOKEN: ${{ secrets.YC_TOKEN }}
+        YC_CLOUD_ID: ${{ secrets.YC_CLOUD_ID }}
+        YC_FOLDER_YD: ${{ secrets.YC_FOLDER_YD }}
+      run: terraform apply -auto-approve -var "token=${YC_TOKEN}" -var "cloud_id=${YC_CLOUD_ID}" -var "folder_id=${YC_FOLDER_YD}"
+      
 #     # Generates an execution plan for Terraform
 #     - name: Terraform Plan
 #       run: terraform plan -input=false
