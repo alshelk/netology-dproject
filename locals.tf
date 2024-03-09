@@ -17,7 +17,7 @@ resource "null_resource" "localkubectl" {
     connection {
       type        = "ssh"
       host        = yandex_compute_instance.mnode[0].network_interface[0].nat_ip_address
-      private_key = file("~/.ssh/id_rsa")
+      private_key = "${var.private_key}"
       user        = var.ssh_user
       timeout     = "30"
     }
