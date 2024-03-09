@@ -4,6 +4,11 @@ variable "token" {
   description = "OAuth-token; https://cloud.yandex.ru/docs/iam/concepts/authorization/oauth-token"
 }
 
+variable "github_token" {
+  type        = string
+  description = "Github personal access token; https://docs.github.com/en/enterprise-server@3.9/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens"
+}
+
 variable "cloud_id" {
   type        = string
   description = "https://cloud.yandex.ru/docs/resource-manager/operations/cloud/get-id"
@@ -12,6 +17,11 @@ variable "cloud_id" {
 variable "folder_id" {
   type        = string
   description = "https://cloud.yandex.ru/docs/resource-manager/operations/folder/get-id"
+}
+
+variable "bucket_name" {
+  type        = string
+  description = "bucket for backend"
 }
 
 ### networks vars
@@ -84,7 +94,7 @@ variable "ssh_user" {
 
 variable "public_key" {
   type    = string
-  default = "~/.ssh/id_rsa.pub"
+#  default = "~/.ssh/id_rsa.pub"
 }
 
 variable "vm_resources" {

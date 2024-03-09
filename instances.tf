@@ -94,7 +94,7 @@ data "template_file" "cloudinit" {
   template = "${file("./templates/cloud-init.yml")}"
   vars = {
     username           = var.ssh_user
-    ssh_public_key     = file("${var.public_key}")
+    ssh_public_key     = "${var.public_key}"
   }
 }
 
