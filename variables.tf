@@ -97,6 +97,11 @@ variable "public_key" {
 #  default = "~/.ssh/id_rsa.pub"
 }
 
+variable "private_key" {
+  type    = string
+#  default = "~/.ssh/id_rsa.pub"
+}
+
 variable "vm_resources" {
   type      = map(number)
   default   = {
