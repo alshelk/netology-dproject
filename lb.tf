@@ -135,5 +135,9 @@ resource "yandex_alb_load_balancer" "k8s-alb" {
       }
     }
   }
+  
+  depends_on = [
+    null_resource.monitoring
+  ]
 }
 

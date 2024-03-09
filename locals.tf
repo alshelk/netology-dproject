@@ -8,8 +8,8 @@ resource "null_resource" "cluster" {
   ]
 }
 
-resource "time_sleep" "wait_2_minutes" {
-  create_duration = "120s"
+resource "time_sleep" "wait_3_minutes" {
+  create_duration = "180s"
 }
 
 resource "null_resource" "localkubectl" {
@@ -34,7 +34,7 @@ resource "null_resource" "localkubectl" {
   
   depends_on = [
     null_resource.cluster,
-    time_sleep.wait_2_minutes
+    time_sleep.wait_3_minutes
   ]
 }
 
