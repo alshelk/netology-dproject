@@ -77,21 +77,26 @@ jobs:
         terraform_version: "1.5.7"
         # cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
-    - name: Set the env
-      id: env_one
-      run: |
-        echo "S3_ACCESS_KEY=${{ secrets.S3_ACCESS_KEY }}" >> "$GITHUB_ENV"
-        echo "S3_SECRET_KEY=${{ secrets.S3_SECRET_KEY }}" >> "$GITHUB_ENV"
-        echo "S3_BUCKET=${{ vars.S3_BUCKET }}" >> "$GITHUB_ENV"
+    # - name: Set the env
+    #   id: env_one
+    #   run: |
+    #     echo "S3_ACCESS_KEY=${{ secrets.S3_ACCESS_KEY }}" >> "$GITHUB_ENV"
+    #     echo "S3_SECRET_KEY=${{ secrets.S3_SECRET_KEY }}" >> "$GITHUB_ENV"
+    #     echo "S3_BUCKET=${{ vars.S3_BUCKET }}" >> "$GITHUB_ENV"
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       id: init
-      # env: 
-      #   S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
-      #   S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
-      #   S3_BUCKET: ${{ vars.S3_BUCKET }}
-      run: terraform init -backend-config="access_key=$S3_ACCESS_KEY" -backend-config="secret_key=$S3_SECRET_KEY" -backend-config="bucket=$S3_BUCKET"
+      env: 
+        S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
+        S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
+        S3_BUCKET: ${{ vars.S3_BUCKET }}
+      run: echo "TERRAFORM_INIT=$(terraform init -backend-config="access_key=$S3_ACCESS_KEY" -backend-config="secret_key=$S3_SECRET_KEY" -backend-config="bucket=$S3_BUCKET")" >> "$GITHUB_OUTPUT"
+      
+    - name: Get terraform init
+      env:
+        TERRAFORM_INIT: ${{ steps.init.outputs }}
+      run: echo $TERRAFORM_INIT
 
     # Checks that all Terraform configuration files adhere to a canonical format
     - name: Terraform Format
