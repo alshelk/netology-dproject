@@ -86,15 +86,15 @@ jobs:
         S3_BUCKET: ${{ vars.S3_BUCKET }}
       run: terraform init -backend-config="access_key=$S3_ACCESS_KEY" -backend-config="secret_key=$S3_SECRET_KEY" -backend-config="bucket=$S3_BUCKET"
 
-    # # Checks that all Terraform configuration files adhere to a canonical format
-    # - name: Terraform Format
-    #   run: terraform fmt -check
+    # Checks that all Terraform configuration files adhere to a canonical format
+    - name: Terraform Format
+      run: terraform fmt -check
 
-    # - name: Terraform Validate
-    #   id: validate
-    #   # Run even if formatting fails
-    #   if: success() || failure()
-    #   run: terraform validate -no-color
+    - name: Terraform Validate
+      id: validate
+      # Run even if formatting fails
+      if: success() || failure()
+      run: terraform validate -no-color
 
     # # Run a terraform plan
     # - name: Terraform Plan
