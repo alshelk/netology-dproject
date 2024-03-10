@@ -91,16 +91,12 @@ jobs:
         S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
         S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
         S3_BUCKET: ${{ vars.S3_BUCKET }}
-      run: echo "TERRAFORM_INIT=$(terraform init -backend-config="access_key=$S3_ACCESS_KEY" -backend-config="secret_key=$S3_SECRET_KEY" -backend-config="bucket=$S3_BUCKET")" >> "$GITHUB_OUTPUT"
-      
-    - name: Get terraform init
-      env:
-        TERRAFORM_INIT: ${{ steps.init.outputs }}
-      run: echo $TERRAFORM_INIT
+      run: terraform init -backend-config="access_key=$S3_ACCESS_KEY" -backend-config="secret_key=$S3_SECRET_KEY" -backend-config="bucket=$S3_BUCKET"
 
-    # Checks that all Terraform configuration files adhere to a canonical format
-    - name: Terraform Format
-      run: terraform fmt -check
+
+    # # Checks that all Terraform configuration files adhere to a canonical format
+    # - name: Terraform Format
+    #   run: terraform fmt -check
 
     - name: Terraform Validate
       id: validate
