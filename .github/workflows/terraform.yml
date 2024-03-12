@@ -77,6 +77,11 @@ jobs:
         terraform_version: "1.5.7"
         # cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
+    - name: Setup ansible
+      id: env_one
+      run: |
+        apt install ansible=2.15.9
+
     # - name: Set the env
     #   id: env_one
     #   run: |
