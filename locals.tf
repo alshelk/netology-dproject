@@ -60,3 +60,13 @@ locals {
     yandex_compute_instance.wnode
   ]
 }
+
+resource "null_resource" "testecho" {  
+  provisioner "local-exec" {
+    command = "echo \"Test message \""
+  }
+
+  depends_on = [
+    yandex_compute_instance.mnode
+  ]
+}

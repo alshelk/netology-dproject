@@ -98,36 +98,4 @@ data "template_file" "cloudinit" {
   }
 }
 
-#data "yandex_compute_image" "jenkins" {
-#  family = "jenkins"
-#}
 
-#resource "yandex_compute_instance" "jenkins" {
-#  name = "jenkins"
-#  platform_id   = var.k8s_node_instance.platform_id
-#  hostname = "jenkins"
-#  resources {
-#    cores         = var.vm_resources.cores
-#    memory        = var.vm_resources.memory
-#    core_fraction = var.vm_resources.core_fraction
-#  }
-#  boot_disk {
-#    initialize_params {
-#      image_id = data.yandex_compute_image.jenkins.image_id
-#      size = var.vm_resources.disk
-#    }
-#  }
-#  scheduling_policy {
-#    preemptible = var.k8s_node_instance.scheduling_policy.preemptible
-#  }
-#  network_interface {
-#    subnet_id = yandex_vpc_subnet.public.id
-#    nat = var.k8s_node_instance.network_interface.nat
-#
-#  }
-#  metadata = {
-#      user-data          = data.template_file.cloudinit.rendered
-#      serial-port-enable = 1
-#  }
-#
-#}
