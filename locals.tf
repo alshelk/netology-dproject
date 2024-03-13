@@ -63,7 +63,7 @@ locals {
 
 resource "null_resource" "testecho" {  
   provisioner "local-exec" {
-    command = "echo \"Test message \""
+    command = "echo \"Test message for CI/CD \""
   }
 
   depends_on = [
