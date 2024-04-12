@@ -27,7 +27,7 @@ resource "null_resource" "localkubectl" {
   }
   
   provisioner "local-exec" {
-    command = "scp -oProxyCommand='ssh -W %h:%p ${var.ssh_user}@${yandex_compute_instance.nat_instance.network_interface.0.nat_ip_address}' ${var.ssh_user}@${yandex_compute_instance.mnode[0].network_interface[0].ip_address}:~/.kube/config ~/.kube/config && sed -i 's/127.0.0.1/${yandex_compute_instance.mnode[0].network_interface[0].ip_address}/' ~/.kube/config"
+    command = "scp -oProxyCommand='ssh -W %h:%p ${var.ssh_user}@${yandex_compute_instance.nat_instance.network_interface.0.nat_ip_address}' ${var.ssh_user}@${yandex_compute_instance.mnode[0].network_interface[0].ip_address}:~/.kube/config ~/.kube/config"
   }
   
   depends_on = [

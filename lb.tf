@@ -26,7 +26,6 @@ resource "yandex_lb_network_load_balancer" "k8s-lb" {
     target_port = 30000
     external_address_spec {
       ip_version = "ipv4"
-#      address    = yandex_vpc_address.addr-k8s.external_ipv4_address[0].address
     }
   }
 
@@ -124,7 +123,6 @@ resource "yandex_alb_load_balancer" "k8s-alb" {
     endpoint {
       address {
         external_ipv4_address {
-#          address = yandex_vpc_address.addr-web.external_ipv4_address[0].address
         }
       }
       ports = [ 80 ]

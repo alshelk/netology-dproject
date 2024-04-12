@@ -54,12 +54,6 @@ resource "yandex_vpc_security_group" "nat-instance-sg" {
     v4_cidr_blocks = ["0.0.0.0/0"]
     port           = 6443
   }
-#  ingress {
-#    protocol       = "TCP"
-#    description    = "etcd-k8s"
-#    v4_cidr_blocks = ["0.0.0.0/0"]
-#    port           = 2379-2380
-#  }
   ingress {
     protocol       = "TCP"
     description    = "kubelet-k8s"
@@ -71,13 +65,7 @@ resource "yandex_vpc_security_group" "nat-instance-sg" {
     description    = "kubelet-api-k8s"
     v4_cidr_blocks = ["0.0.0.0/0"]
     port           = 10255
-  }    
-#  ingress {
-#    protocol       = "TCP"
-#    description    = "nodePort-k8s"
-#    v4_cidr_blocks = ["0.0.0.0/0"]
-#    port           = 30000-32767
-#  }     
+  }      
   ingress {
     protocol       = "TCP"
     description    = "k8s-port"
@@ -94,27 +82,3 @@ resource "yandex_vpc_route_table" "nat-instance-route" {
     next_hop_address   = yandex_compute_instance.nat_instance.network_interface.0.ip_address
   }
 }
-
-#resource "yandex_vpc_subnet" "public" {
-#  name           = var.subnets_name[0]
-#  zone           = var.default_zone
-#  network_id     = yandex_vpc_network.my-vpc.id
-#  v4_cidr_blocks = var.default_cidr[0]
-#}
-#
-#resource "yandex_vpc_subnet" "private" {
-#  name           = var.subnets_name[1]
-#  zone           = var.default_zone
-#  network_id     = yandex_vpc_network.my-vpc.id
-#  v4_cidr_blocks = var.default_cidr[1]
-##  route_table_id = yandex_vpc_route_table.nat-instance-route.id
-#}
-
-#resource "yandex_vpc_subnet" "subnets" {
-#  for_each       = var.cidr
-#  name           = each.key
-#  zone           = var.default_zone
-#  network_id     = yandex_vpc_network.my-vpc.id
-#  v4_cidr_blocks = each.value
-##  route_table_id = yandex_vpc_route_table.nat-instance-route.id
-#}

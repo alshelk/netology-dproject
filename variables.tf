@@ -41,17 +41,10 @@ variable "cidr" {
   }
 }
 
-#variable "default_cidr" {
-#  type        = list(list(string))
-#  default     = [["192.168.10.0/24", "192.168.11.0/24"],["192.168.20.0/24", "192.168.21.0/24"]]
-#  description = "https://cloud.yandex.ru/docs/vpc/operations/subnet-create"
-#}
-
 variable "dns_zone_id" {
   type    = string
   default = "dns2njvtqjticn9q5lf4"
 }
-
 
 ### service account
 
@@ -87,42 +80,6 @@ variable "public_key" {
 variable "private_key" {
   type    = string
 }
-
-#variable "vm_resources" {
-#  type      = map(number)
-#  default   = {
-#    cores         = 2
-#    memory        = 2
-#    disk          = 10
-#    core_fraction = 20
-#  }
-#}
-
-#variable "k8s_node_instance" {
-#  type        = object({
-#    platform_id       = string,
-#    scheduling_policy = map(bool),
-#    network_interface = map(bool)
-#  })
-#  default     = {
-#    platform_id = "standard-v1",
-#    scheduling_policy = { preemptible = false },
-#    network_interface = { nat = true }
-#  }
-#  description = "resource instance variables"
-#}
-
-#variable "count_wnode" {
-#  type        = number
-#  default     = 2
-#  description = "count worker nodes"
-#}
-#
-#variable "count_mnode" {
-#  type        = number
-#  default     = 1
-#  description = "count master nodes"
-#}
 
 variable "sa_name_cont_reg" {
   type        = string
