@@ -10,3 +10,5 @@
 personal.auto.tfvars
 secret.*
 outputs.tf
+
+key.json

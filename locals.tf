@@ -8,18 +8,16 @@ resource "null_resource" "cluster" {
   ]
 }
 
-resource "time_sleep" "wait_3_minutes" {
-  create_duration = "180s"
-}
-
 resource "null_resource" "localkubectl" {
   provisioner "remote-exec" {
     connection {
       type        = "ssh"
-      host        = yandex_compute_instance.mnode[0].network_interface[0].nat_ip_address
+      host        = yandex_compute_instance.mnode[0].network_interface[0].ip_address
       private_key = "${var.private_key}"
       user        = var.ssh_user
       timeout     = "30"
+      bastion_host  = yandex_compute_instance.nat_instance.network_interface.0.nat_ip_address
+      bastion_user  = "${var.ssh_user}"
     }
     inline = [
       "mkdir /home/${var.ssh_user}/.kube",
@@ -29,12 +27,11 @@ resource "null_resource" "localkubectl" {
   }
   
   provisioner "local-exec" {
-    command = "scp ${var.ssh_user}@${yandex_compute_instance.mnode[0].network_interface[0].nat_ip_address}:~/.kube/config ~/.kube/config && sed -i 's/127.0.0.1/${yandex_compute_instance.mnode[0].network_interface[0].nat_ip_address}/' ~/.kube/config"
+    command = "scp -oProxyCommand='ssh -W %h:%p ${var.ssh_user}@${yandex_compute_instance.nat_instance.network_interface.0.nat_ip_address}' ${var.ssh_user}@${yandex_compute_instance.mnode[0].network_interface[0].ip_address}:~/.kube/config ~/.kube/config && sed -i 's/127.0.0.1/${yandex_compute_instance.mnode[0].network_interface[0].ip_address}/' ~/.kube/config"
   }
   
   depends_on = [
     null_resource.cluster,
-    time_sleep.wait_3_minutes
   ]
 }
 
@@ -42,8 +39,10 @@ resource "null_resource" "monitoring" {
   
   provisioner "local-exec" {
     command = <<EOT
-kubectl apply --server-side -f ${path.module}/kube-prometheus/manifests/setup
+ssh -fNT -L 6443:${yandex_compute_instance.mnode[0].network_interface[0].ip_address}:6443  ${var.ssh_user}@${yandex_compute_instance.nat_instance.network_interface.0.nat_ip_address} 
+kubectl apply --server-side -f ${path.module}/kube-prometheus/manifests/setup 
 kubectl wait --for condition=Established --all CustomResourceDefinition --namespace=monitoring 
+sleep 60  
 kubectl apply -f ${path.module}/kube-prometheus/manifests/ 
 EOT
   }
@@ -61,12 +60,18 @@ locals {
   ]
 }
 
-resource "null_resource" "testecho" {  
+resource "null_resource" "docker_login" {
+  
   provisioner "local-exec" {
-    command = "echo \"Test message for CI/CD \""
+    command = <<EOT
+yc iam key create --folder-id "${var.folder_id}" --service-account-name "${var.sa_name_cont_reg}" -o key.json 
+cat key.json | docker login --username json_key --password-stdin cr.yandex
+kubectl apply -f ../simpleApp/K8s/
+kubectl create secret generic ycregistry --namespace=app --from-file=.dockerconfigjson=/home/vagrant/.docker/config.json  --type=kubernetes.io/dockerconfigjson
+EOT
   }
 
   depends_on = [
-    yandex_compute_instance.mnode
+    null_resource.localkubectl
   ]
 }

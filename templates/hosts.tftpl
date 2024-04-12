@@ -4,18 +4,20 @@ all:
   hosts:
     %{~ for i in masternodes ~}
     ${i["name"]}:
-      ansible_host: ${i["network_interface"][0]["nat_ip_address"]}
+      ansible_host: ${i["network_interface"][0]["ip_address"]}
       ip: ${i["network_interface"][0]["ip_address"]}
       access_ip: ${i["network_interface"][0]["ip_address"]}
       ansible_user: ${user}
     %{~ endfor ~}
     %{~ for i in workernodes ~}
     ${i["name"]}:
-      ansible_host: ${i["network_interface"][0]["nat_ip_address"]}
+      ansible_host: ${i["network_interface"][0]["ip_address"]}
       ip: ${i["network_interface"][0]["ip_address"]}
       access_ip: ${i["network_interface"][0]["ip_address"]}
       ansible_user: ${user}
     %{~ endfor ~}
+  vars:
+    ansible_ssh_common_args: '-o ProxyCommand="ssh -oStrictHostKeyChecking=accept-new -W %h:%p -q ${user}@${nat["network_interface"][0]["nat_ip_address"]}"'
   children:
     kube_control_plane:
       hosts:
