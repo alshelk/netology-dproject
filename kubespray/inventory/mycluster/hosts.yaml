@@ -3,20 +3,22 @@
 all:
   hosts:
     mnode-0:
-      ansible_host: 84.252.131.229
+      ansible_host: 192.168.20.10
+      ip: 192.168.20.10
+      access_ip: 192.168.20.10
+      ansible_user: ubuntu
+    wnode-0:
+      ansible_host: 192.168.20.21
       ip: 192.168.20.21
       access_ip: 192.168.20.21
       ansible_user: ubuntu
-    wnode-0:
-      ansible_host: 178.154.223.125
-      ip: 192.168.20.30
-      access_ip: 192.168.20.30
-      ansible_user: ubuntu
     wnode-1:
-      ansible_host: 178.154.221.64
-      ip: 192.168.20.3
-      access_ip: 192.168.20.3
+      ansible_host: 192.168.20.5
+      ip: 192.168.20.5
+      access_ip: 192.168.20.5
       ansible_user: ubuntu
+  vars:
+    ansible_ssh_common_args: '-o ProxyCommand="ssh -oStrictHostKeyChecking=accept-new -W %h:%p -q ubuntu@51.250.77.131"'
   children:
     kube_control_plane:
       hosts:
